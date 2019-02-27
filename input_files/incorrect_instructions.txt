@@ -1,0 +1,20 @@
++ A + B => C
+A + B => C => D  
+A + B => C +
+A + B + => C  
+A + B => + C  
+a + B => C
+A + B = C  
+A + B => @
+AB + C => D 
+A + B => CD 
+A + B => ((C)
+((A + B) => C)
+((A + B)C) => D
+A || B => C  
+A + B => C => D 
+A + B <=> C <=> D 
+A + B => C >
+A < B => C  
+A + B ==> C  
+A + B <==> C

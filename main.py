@@ -2,8 +2,13 @@
 
 
 
+import argparse
+from setting import Setting
+
+
 def main():
-    print('hello') 
+    setting = Setting()
+    print(setting.file)
 
 
 if __name__ == "__main__":
