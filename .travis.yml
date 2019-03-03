@@ -3,5 +3,7 @@ python:
   - 3.6
 install:
   - pip install pep8
+  - pip install pytest
 script:
   - pep8 **/**.py
+  - pytest tests/test_lexer.py

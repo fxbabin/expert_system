@@ -1,7 +1,3 @@
-
-
-
-
 import argparse
 from setting import Setting
 

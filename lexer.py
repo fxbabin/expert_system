@@ -5,7 +5,7 @@ class Lexer(object):
     def __init__(self, line):
         self.rule = line
         self.pos = 0
-        
+
     def error(self, char):
         raise Exception("Invalid character \'{}\'"
                         " at index {}".format(char, self.pos + 1))
@@ -71,9 +71,9 @@ class Lexer(object):
 
     def lexer_tester(self):
         out = ""
-        for e in self.get_next_token():  # must be removed in final version
+        for e in self.get_next_token():
             if e.value is None:
                 out += "."
             else:
-                out += e.value             
+                out += e.value
         return (out)

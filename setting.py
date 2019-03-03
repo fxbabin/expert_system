@@ -14,6 +14,7 @@ import re
 #   Class   #
 #############
 
+
 class Setting:
 
     def __init__(self):
@@ -21,8 +22,6 @@ class Setting:
         self.instructions = []
         self.get_arguments(sys.argv[1:])
         self.check_file()
-
-        #print(self.instructions)
 
     def get_arguments(self, args=None):
         """
@@ -37,8 +36,9 @@ class Setting:
 
     def check_file(self):
         if not Path(self.file).is_file():
-            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), self.file)
-        
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT),
+                                    self.file)
+
         with open(self.file, 'r') as file:
             for line in file.readlines():
                 if line.startswith('#'):
