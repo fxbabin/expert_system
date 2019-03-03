@@ -8,7 +8,7 @@ from setting import Setting
 
 def main():
     setting = Setting()
-    print(setting.file)
+    print(setting.instructions)
 
 
 if __name__ == "__main__":

@@ -3,9 +3,9 @@
 #   Librairies   #
 ##################
 
+from pathlib import Path
 import argparse
 import sys
-from pathlib import Path
 import errno
 import os
 import re
@@ -46,15 +46,4 @@ class Setting:
                 rule = line.split('#')[0]
                 if rule.isspace():
                     continue
-                self.instructions.append(re.sub('[\s+]', '', rule))
-    
-    #def check_instructions(self):
-        
-#no instructions
-#no facts
-#no queries
-#inversions
-
-#no rules
-# A fact can be any uppercase alphabetical character.
-#. It will contain a list of rules, then a list of initial facts, then a list of queries
+                self.instructions.append(rule.strip())
