@@ -6,4 +6,5 @@ install:
   - pip install pytest
 script:
   - pep8 **/**.py
-  - pytest tests/test_lexer.py
+  - cd tests
+  - pytest test_lexer.py
