@@ -68,7 +68,7 @@ class Lexer(object):
             self.pos += 2
             self.error("EOL")
         self.error(self.rule[i])
-    
+
     def lexer_tester(self):
         out = ""
         for e in self.get_next_token():  # must be removed in final version
