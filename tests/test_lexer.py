@@ -1,7 +1,7 @@
 import sys
 import pytest
 sys.path.append('..')
-from lexer import Lexer  # noqa: E402
+from es_lexer import Lexer  # noqa: E402
 
 
 @pytest.mark.skip(reason="no way of currently testing this")

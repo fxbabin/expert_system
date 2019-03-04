@@ -8,3 +8,4 @@ script:
   - pep8 **/**.py
   - cd tests
   - pytest test_lexer.py
+  - pytest test_parser.py

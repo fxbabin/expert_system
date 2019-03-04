@@ -1,4 +1,4 @@
-from lexer_token import Token
+from es_token import Token
 
 
 class Lexer(object):
@@ -6,9 +6,13 @@ class Lexer(object):
         self.rule = line
         self.pos = 0
 
-    def error(self, char):
-        raise Exception("Invalid character \'{}\'"
-                        " at index {}".format(char, self.pos + 1))
+    def error(self, EOL=False):
+        if EOL is False:
+            raise Exception(('Invalid character \'{}\' at index {}'
+                             .format(self.rule[self.pos], self.pos + 1)))
+        else:
+            raise Exception('Invalid character \'{}\' at index {}'
+                            .format("EOL", self.pos + 1))
 
     def get_next_token(self):
         op = {
@@ -40,7 +44,7 @@ class Lexer(object):
                 i += tmp[0]
                 yield tmp[1]
             else:
-                self.error(self.rule[i])
+                self.error()
             i += 1
         yield Token("EOL", None)
 
@@ -51,23 +55,23 @@ class Lexer(object):
                     return ([2, Token("ONLY_IF", "<=>")])
                 else:
                     self.pos += 2
-                    self.error(self.rule[i + 2])
+                    self.error()
             else:
                 self.pos += 1
-                self.error(self.rule[i + 1])
+                self.error()
         elif self.rule[i] == "=" and i < len_rule - 1:
             if self.rule[i + 1] == ">":
                 return ([1, Token("IMPLIES", "=>")])
             else:
                 self.pos += 1
-                self.error(self.rule[i + 1])
+                self.error()
         if i == len_rule - 1:
             self.pos += 1
-            self.error("EOL")
+            self.error(EOL=True)
         elif i == len_rule - 2:
             self.pos += 2
-            self.error("EOL")
-        self.error(self.rule[i])
+            self.error(EOL=True)
+        self.error()
 
     def lexer_tester(self):
         out = ""
