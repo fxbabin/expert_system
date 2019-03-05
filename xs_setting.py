@@ -8,7 +8,6 @@ import argparse
 import sys
 import errno
 import os
-import re
 
 #############
 #   Class   #
