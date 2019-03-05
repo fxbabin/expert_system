@@ -1,10 +1,12 @@
 import argparse
-from setting import Setting
+from es_setting import Setting
 
 
 def main():
     setting = Setting()
-    print(setting.instructions)
+    print(setting.rules)
+    print(setting.true_facts)
+    print(setting.queries)
 
 
 if __name__ == "__main__":

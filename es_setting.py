@@ -19,9 +19,14 @@ class Setting:
 
     def __init__(self):
         self.file = ""
-        self.instructions = []
+        self.rules = []
+        self.true_facts = ""
+        self.queries = ""
         self.get_arguments(sys.argv[1:])
         self.check_file()
+
+    def error(self, s):
+        raise Exception("Invalid syntax : {}".format(s))
 
     def get_arguments(self, args=None):
         """
@@ -46,4 +51,21 @@ class Setting:
                 rule = line.split('#')[0]
                 if rule.isspace():
                     continue
-                self.instructions.append(rule.strip())
+                if rule[0] == "=":
+                    if len(self.rules) == 0:
+                        self.error("facts declared but no rules are found")
+                    self.true_facts = rule[1:]
+                elif rule[0] == "?":
+                    if len(self.rules) == 0:
+                        self.error("queries declared but no rules are found")
+                    if len(self.true_facts) == 0:
+                        self.error("queries declared but no facts are found")
+                    self.queries = rule[1:]
+                else:
+                    if len(self.true_facts) > 0:
+                        self.error("rule declared but facts are already"
+                                   "declared")
+                    if len(self.queries) > 0:
+                        self.error("rule declared but queries are already
+                                   "declared")
+                    self.rules.append(rule.strip())
