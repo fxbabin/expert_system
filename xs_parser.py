@@ -1,4 +1,4 @@
-from es_node import Node_condition, Node_letter
+from xs_node import Node_condition, Node_letter
 
 
 class Parser(object):

@@ -1,8 +1,5 @@
-from es_node import Node_letter, Node_condition
-from es_token import Token
-
 class Interpreter(object):
-    
+
     def __init__(self):
         pass
         
@@ -28,5 +25,3 @@ class Interpreter(object):
             return self.interpret(left, graph) | self.interpret(right, graph)
         if node.token.type == "XOR":
             return self.interpret(left, graph) ^ self.interpret(right, graph)
-                
-

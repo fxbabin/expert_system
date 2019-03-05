@@ -1,4 +1,4 @@
-from es_token import Token
+from xs_token import Token
 
 
 class Lexer(object):
