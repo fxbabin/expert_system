@@ -1,0 +1,8 @@
+A + B => C
+A + C => F
+
+=AB
+?F
+
+# assertions
+# =F

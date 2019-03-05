@@ -43,7 +43,7 @@ class Graph(object):
         for node in self.implies_list:
             if node.name == name:
                 return node
-        self.error("Error node not found")
+        return None
     
 
     def learn_facts(self, true_facts):
@@ -84,12 +84,12 @@ class Graph(object):
     def get_final_state(self, node):
         history = []
         for child in node.childs_pos:
-            res = self.interpretor.interpret(child)
+            res = self.interpretor.interpret(child, self)
             if res == 1:
                 history.append(True)
                 
         for child in node.childs_neg:
-            res = self.interpretor.interpret(child)
+            res = self.interpretor.interpret(child, self)
             if res == 1:
                 history.append(False)
             

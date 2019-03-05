@@ -22,6 +22,8 @@ def main():
         
         graph.check_contradiction()
     
+#        for node in graph.implies_list[3].childs_pos:
+#            print(node.left.left.right)
         for queried in setting.queries:
             graph.query(queried)
 
