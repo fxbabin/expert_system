@@ -6,3 +6,6 @@ install:
 script:
   - flake8 *.py
   - flake8 tests/*py
+  - cd tests
+  - pytest test_lexer.py
+  - pytest test_parser.py
