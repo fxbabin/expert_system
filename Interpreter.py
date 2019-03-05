@@ -1,4 +1,5 @@
-from ast import Token, Node_condition, Node_letter
+from es_node import Node_letter, Node_condition
+from es_token import Token
 
 class Interpreter(object):
     

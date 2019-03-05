@@ -1,5 +1,6 @@
 from Interpreter import Interpreter
-from ast import Token, Node_condition, Node_letter
+from es_token import Token
+from es_node import Node_condition, Node_letter
 
 class Graph(object):
     
