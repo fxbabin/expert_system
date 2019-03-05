@@ -2,10 +2,10 @@ language: python
 python:
   - 3.6
 install:
-  - pip install pep8
+  - pip install flake8
   - pip install pytest
 script:
-  - pep8 **/**.py
+  - flake8 **/**.py
   - cd tests
   - pytest test_lexer.py
   - pytest test_parser.py
