@@ -3,4 +3,5 @@ python:
   - 3.6
 install:
   - pip install flake8
-script: "flake8 **/**.py"
+script:
+  - flake8 main.py
