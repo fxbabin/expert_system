@@ -33,3 +33,21 @@ def test_and_in_conclusion():
     res = tester("and_in_conclusion.txt")
     result = 'F is True\n'
     assert res.stdout.decode("utf-8") == result
+
+
+def test_nested_implies():
+    res = tester("nested_implies.txt")
+    result = 'G is True\nF is False\n'
+    assert res.stdout.decode("utf-8") == result
+
+
+def test_hard():
+    res = tester("hard.txt")
+    result = 'J is True\n'
+    assert res.stdout.decode("utf-8") == result
+
+
+def test_very_hard():
+    res = tester("very_hard.txt")
+    result = 'T is True\nF is False\n'
+    assert res.stdout.decode("utf-8") == result

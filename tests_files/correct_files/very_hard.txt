@@ -1,0 +1,11 @@
+Y | Z => T
+Y ^ Z => !F
+A ^ B => !Z + Y
+C + D + E => !A + !B
+!A ^ !C => Z
+A + C => B
+!Z => C + D
+
+=ACDEF
+
+?TF
