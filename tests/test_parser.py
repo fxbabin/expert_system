@@ -1,8 +1,8 @@
 import sys
 import pytest
 sys.path.append('..')
-from es_lexer import Lexer  # noqa: E402
-from es_parser import Parser  # noqa: E402
+from xs_lexer import Lexer  # noqa: E402
+from xs_parser import Parser  # noqa: E402
 
 out = ""
 

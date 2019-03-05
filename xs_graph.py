@@ -1,4 +1,4 @@
-from Interpreter import Interpreter
+from xs_interpreter import Interpreter
 
 
 class Graph(object):
