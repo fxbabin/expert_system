@@ -54,18 +54,18 @@ class Setting:
                 if rule[0] == "=":
                     if len(self.rules) == 0:
                         self.error("facts declared but no rules are found")
-                    self.true_facts = rule[1:]
+                    self.true_facts = rule[1:].strip()
                 elif rule[0] == "?":
                     if len(self.rules) == 0:
                         self.error("queries declared but no rules are found")
                     if len(self.true_facts) == 0:
                         self.error("queries declared but no facts are found")
-                    self.queries = rule[1:]
+                    self.queries = rule[1:].strip()
                 else:
                     if len(self.true_facts) > 0:
                         self.error("rule declared but facts are already"
                                    "declared")
                     if len(self.queries) > 0:
-                        self.error("rule declared but queries are already
+                        self.error("rule declared but queries are already"
                                    "declared")
                     self.rules.append(rule.strip())

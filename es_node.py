@@ -5,7 +5,8 @@ class Node_letter(object):
         self.name = name
         self.state = 0
         self.neg = 0
-        self.childs = []
+        self.childs_pos = []
+        self.childs_neg = []
 
     def __str__(self):
         return "Node_letter({})".format(self.token)
