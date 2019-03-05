@@ -44,7 +44,7 @@ class Graph(object):
             if node.name == name:
                 return node
         return None
-    
+
     def learn_facts(self, true_facts):
         self.true_facts = true_facts
 
