@@ -1,0 +1,10 @@
+A => B ^ C
+A => C ^ D
+(B | C) + D => E
+!E ^ D => T
+E | C => P
+E ^ D => F
+
+=A
+
+?TPF # T and P are True, F is False
