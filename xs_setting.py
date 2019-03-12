@@ -18,6 +18,7 @@ class Setting:
 
     def __init__(self):
         self.file = ""
+        self.graph_rules = ""
         self.rules = []
         self.true_facts = ""
         self.queries = ""
@@ -35,8 +36,11 @@ class Setting:
         parser = argparse.ArgumentParser(description='Npuzzle program.')
         parser.add_argument('-f', '--file', help='input rules file',
                             required=True)
+        parser.add_argument('-g', '--graph',
+                            help='graphs you want to generate')
         res = parser.parse_args(args)
         self.file = res.file
+        self.graph_rules = res.graph
 
     def check_file(self):
         if not Path(self.file).is_file():

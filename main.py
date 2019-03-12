@@ -6,6 +6,12 @@ from xs_setting import Setting
 
 def main():
     setting = Setting()
+    if setting.graph_rules:
+        try:
+            print('Importing visualizer (this may take some time) ...')
+            from xs_visualizer import Visualizer
+        except ImportError:
+            raise ImportError('Failed to import visualizer')
     try:
         graph = Graph()
         for rule in setting.rules:
@@ -15,6 +21,9 @@ def main():
 
         for node in graph.implies_list:
             graph.set_facts(node)
+
+        visu = Visualizer()
+        visu.generate_all_graphs(setting.graph_rules, graph)
 
         graph.check_contradiction()
 
