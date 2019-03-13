@@ -22,7 +22,11 @@ class Graph(object):
         self.update_implies_list(root.right)
         self.update_graph(root.left, root.right, 0)
         self.ast_list.append(root.right)
-        
+        if root.token.type == "ONLY_IF":
+            self.update_implies_list(root.left)
+            self.update_graph(root.right, root.left, 0)
+            self.ast_list.append(root.left)
+
     def update_implies_list(self, node):
         if node:
             if type(node).__name__ == "Node_letter":
@@ -80,14 +84,17 @@ class Graph(object):
 
     def set_facts(self, node):
         if node:
+            node.visited = 1
             if type(node).__name__ == "Node_letter":
                 for child in (node.childs_pos + node.childs_neg):
-                    self.set_facts(child)
+                    if child.visited == 0:
+                        self.set_facts(child)
                 if node.token.value in self.true_facts:
                     node.state = 1 
             if type(node).__name__ == "Node_condition":
                 self.set_facts(node.left)
                 self.set_facts(node.right)
+            node.visited = 0
         
     def query(self, letter):
         if letter in self.full_history.keys():
