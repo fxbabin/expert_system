@@ -22,6 +22,8 @@ class Setting:
         self.rules = []
         self.true_facts = ""
         self.queries = ""
+        self.interactive = False
+        self.truth_tables = False
         self.get_arguments(sys.argv[1:])
         self.check_file()
 
@@ -38,9 +40,15 @@ class Setting:
                             required=True)
         parser.add_argument('-g', '--graph',
                             help='graphs you want to generate')
+        parser.add_argument('-t', '--truth_tables', action="store_true",
+                            help='display truth tables used for resolution')
+        parser.add_argument('-i', '--interactive_facts', action="store_true",
+                            help='interactive facts mode')
         res = parser.parse_args(args)
         self.file = res.file
-        self.graph_rules = res.graph
+        self.graph_rules = res.graph 
+        self.interactive = res.interactive_facts
+        self.truth_tables = res.truth_tables
 
     def check_file(self):
         if not Path(self.file).is_file():

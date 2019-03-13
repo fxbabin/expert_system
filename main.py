@@ -22,10 +22,15 @@ def main():
         for node in graph.implies_list:
             graph.set_facts(node)
 
-        visu = Visualizer()
-        visu.generate_all_graphs(setting.graph_rules, graph)
+        if setting.graph_rules:
+            visu = Visualizer()
+            visu.generate_all_graphs(setting.graph_rules, graph)
 
-        graph.check_contradiction()
+        graph.display_tables = setting.truth_tables
+        if graph.incoherent == 0:
+            graph.resolve_simple()
+        else:
+            graph.resolve_complex()
 
         for queried in setting.queries:
             graph.query(queried)
