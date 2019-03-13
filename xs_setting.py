@@ -46,7 +46,7 @@ class Setting:
                             help='interactive facts mode')
         res = parser.parse_args(args)
         self.file = res.file
-        self.graph_rules = res.graph 
+        self.graph_rules = res.graph
         self.interactive = res.interactive_facts
         self.truth_tables = res.truth_tables
 

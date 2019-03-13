@@ -37,8 +37,11 @@ def process_engine(setting):
     except Exception as e:
         print(e)
 
+
 def ask_new_facts(setting):
-    entry = input("Previous facts where : {}\nEnter the new facts please ('x' to quit)\n".format(setting.true_facts))
+    entry = input("Previous facts where : {}\n"
+                  "Enter the new facts please ('x'"
+                  " to quit)\n".format(setting.true_facts))
     if entry == "x":
         print("Good bye")
         setting.interactive = False
@@ -49,6 +52,7 @@ def ask_new_facts(setting):
             ask_new_facts(setting)
     setting.true_facts = entry
 
+
 def main():
     setting = Setting()
     if setting.interactive:
@@ -57,6 +61,7 @@ def main():
             ask_new_facts(setting)
     else:
         process_engine(setting)
+
 
 if __name__ == "__main__":
     main()

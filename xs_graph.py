@@ -1,6 +1,7 @@
 from xs_interpreter import Interpreter
 import copy
 
+
 class Graph(object):
 
     def __init__(self):
@@ -56,23 +57,27 @@ class Graph(object):
     def update_ind_dics(self, left, node):
         if node.token.type == "OR":
             if type(node.left).__name__ == "Node_letter":
-                self.find_letter_in_implies(node.left.name).or_dic[left] = node.right
+                tmp = self.find_letter_in_implies(node.left.name)
+                tmp.or_dic[left] = node.right
             else:
                 node.left.or_dic[left] = node.right
             if type(node.right).__name__ == "Node_letter":
-                self.find_letter_in_implies(node.right.name).or_dic[left] = node.left
+                tmp = self.find_letter_in_implies(node.right.name)
+                tmp.or_dic[left] = node.left
             else:
                 node.right.or_dic[left] = node.left
         if node.token.type == "XOR":
             if type(node.left).__name__ == "Node_letter":
-                self.find_letter_in_implies(node.left.name).xor_dic[left] = node.right
+                tmp = self.find_letter_in_implies(node.left.name)
+                tmp.xor_dic[left] = node.right
             else:
                 node.left.xor_dic[left] = node.right
             if type(node.right).__name__ == "Node_letter":
-                self.find_letter_in_implies(node.right.name).xor_dic[left] = node.left
+                tmp = self.find_letter_in_implies(node.right.name)
+                tmp.xor_dic[left] = node.left
             else:
                 node.right.xor_dic[left] = node.left
-            
+
     def find_letter_in_implies(self, name):
         for node in self.implies_list:
             if node.name == name:
@@ -90,15 +95,15 @@ class Graph(object):
                     if child.visited == 0:
                         self.set_facts(child)
                 if node.token.value in self.true_facts:
-                    node.state = 1 
+                    node.state = 1
             if type(node).__name__ == "Node_condition":
                 self.set_facts(node.left)
                 self.set_facts(node.right)
             node.visited = 0
-        
+
     def query(self, letter):
         if letter in self.full_history.keys():
-            if self.full_history[letter] != None:
+            if self.full_history[letter] is not None:
                 print("{} is {}".format(letter, self.full_history[letter]))
                 return self.full_history[letter]
         if letter in self.true_facts:
@@ -117,7 +122,7 @@ class Graph(object):
                 else:
                     self.full_history[node.name] = False
         return self.full_history
-    
+
     def get_simple_final_state(self, node):
         history = []
         for child in node.childs_pos:
@@ -137,7 +142,7 @@ class Graph(object):
         else:
             self.error("Error contradiction found with letter {}"
                        .format(node.name))
-   
+
     def merge_new_graph(self, new):
         if self.tmp_history == {}:
             self.tmp_history = new
@@ -145,7 +150,7 @@ class Graph(object):
         for letter, state in new.items():
             if state != self.tmp_history[letter]:
                 self.tmp_history[letter] = "IND"
-                
+
     def resolve_complex(self):
         self.check_ind_rules(self, self, None, 0)
         self.tmp_history = {}
@@ -155,37 +160,55 @@ class Graph(object):
         self.full_history = self.tmp_history
         if self.display_tables:
             self.display_table()
-    
-    def handle_xor(self, origin_graph, current_graph, prev_rule, prev_case, node, rule, mirror):
-        if prev_case == 1 or prev_case == 2 or prev_case == 6 or prev_case == 7:
+
+    def handle_xor(self, origin_graph, current_graph, prev_rule,
+                   prev_case, node, rule, mirror):
+        if (prev_case == 1 or prev_case == 2 or prev_case == 6
+                or prev_case == 7):
             self.add_recursively_rule(node, prev_rule)
             self.add_recursively_rule(mirror, prev_rule)
-        
+
         for index in range(0, len(current_graph.list_copy_rule)):
             if node in current_graph.list_copy_rule[index]:
-                self.add_recursively_rule(node, current_graph.list_copy_rule[index][0])
-                self.add_recursively_rule(mirror, current_graph.list_copy_rule[index][0])
+                (self.add_recursively_rule(node,
+                 current_graph.list_copy_rule[index][0]))
+                (self.add_recursively_rule(mirror,
+                 current_graph.list_copy_rule[index][0]))
                 del current_graph.list_copy_rule[index]
                 prev_case = 4
                 break
-                
+
         copy_graph_1 = copy.deepcopy(current_graph)
         copy_graph_2 = copy.deepcopy(current_graph)
         copy_rule = None
         case = 0
-        if type(mirror).__name__ == "Node_condition" and type(node).__name__ == "Node_condition":
+        if (type(mirror).__name__ == "Node_condition"
+                and type(node).__name__ == "Node_condition"):
             case = 3
             if prev_case == 0 or prev_case == 3:
-                copy_rule_1, copy_node_1 = self.set_special_xor(rule, node, current_graph, copy_graph_1, 1)
-                copy_rule_2, copy_node_2 = self.set_special_xor(rule, node, current_graph, copy_graph_2, 2)                
-                self.check_ind_rules(origin_graph, copy_graph_1, copy_rule_1, 3)
-                self.check_ind_rules(origin_graph, copy_graph_2, copy_rule_2, 3)
-            elif prev_case == 1 or prev_case == 2 or prev_case == 4 or prev_case == 5:
-                copy_rule_1 = self.set_special_xor(rule, node, current_graph, copy_graph_1, 3)
-                copy_rule_2 = self.set_special_xor(rule, node, current_graph, copy_graph_2, 4)
-                self.check_ind_rules(origin_graph, copy_graph_1, copy_rule_1, 3)
-                self.check_ind_rules(origin_graph, copy_graph_2, copy_rule_2, 3)                
-                
+                copy_rule_1, copy_node_1 = self.set_special_xor(rule, node,
+                                                                current_graph,
+                                                                copy_graph_1,
+                                                                1)
+                copy_rule_2, copy_node_2 = self.set_special_xor(rule, node,
+                                                                current_graph,
+                                                                copy_graph_2,
+                                                                2)
+                self.check_ind_rules(origin_graph, copy_graph_1,
+                                     copy_rule_1, 3)
+                self.check_ind_rules(origin_graph, copy_graph_2,
+                                     copy_rule_2, 3)
+            elif (prev_case == 1 or prev_case == 2 or prev_case == 4
+                  or prev_case == 5):
+                copy_rule_1 = self.set_special_xor(rule, node, current_graph,
+                                                   copy_graph_1, 3)
+                copy_rule_2 = self.set_special_xor(rule, node, current_graph,
+                                                   copy_graph_2, 4)
+                self.check_ind_rules(origin_graph, copy_graph_1,
+                                     copy_rule_1, 3)
+                self.check_ind_rules(origin_graph, copy_graph_2,
+                                     copy_rule_2, 3)
+
         if type(mirror).__name__ == "Node_condition" and case != 3:
             copy_node = copy_graph_1.find_letter_in_implies(node.name)
             copy_rule = self.get_copy_rule(node, rule, copy_node, copy_graph_1)
@@ -195,17 +218,18 @@ class Graph(object):
                 case = 6
             else:
                 case = 1
-            
+
         if type(node).__name__ == "Node_condition" and case != 3:
             copy_node = copy_graph_1.find_letter_in_implies(mirror.name)
-            copy_rule = self.get_copy_rule(mirror, rule, copy_node, copy_graph_1)
+            copy_rule = self.get_copy_rule(mirror, rule, copy_node,
+                                           copy_graph_1)
             self.handle_neg(copy_rule, copy_node, 0)
             self.handle_neg(copy_rule, copy_node.xor_dic[copy_rule[0]], 1)
             if node.neg == 1:
                 case = 7
             else:
                 case = 2
-        
+
         if prev_case == 0:
             if case == 0 or case == 1 or case == 6:
                 self.set_rules_xor(rule, node, copy_graph_1, 1)
@@ -255,7 +279,7 @@ class Graph(object):
             elif case == 2 or case == 7:
                 self.set_rules_xor(rule, mirror, copy_graph_1, 1)
                 self.set_rules_xor(rule, mirror, copy_graph_2, 2)
-        
+
         if case == 0:
             self.check_ind_rules(origin_graph, copy_graph_1, copy_rule, case)
             self.check_ind_rules(origin_graph, copy_graph_2, copy_rule, case)
@@ -265,15 +289,18 @@ class Graph(object):
         if case == 2 or case == 7:
             self.check_ind_rules(origin_graph, copy_graph_1, copy_rule, case)
             self.check_ind_rules(origin_graph, copy_graph_2, None, 0)
-        
-    def handle_or(self, origin_graph, current_graph, prev_rule, prev_case, node, rule, mirror):
+
+    def handle_or(self, origin_graph, current_graph, prev_rule,
+                  prev_case, node, rule, mirror):
         if prev_case == 1 or prev_case == 2:
             self.add_recursively_rule(node, prev_rule)
             self.add_recursively_rule(mirror, prev_rule)
         for index in range(0, len(current_graph.list_copy_rule)):
             if node in current_graph.list_copy_rule[index]:
-                self.add_recursively_rule(node, current_graph.list_copy_rule[index][0])
-                self.add_recursively_rule(mirror, current_graph.list_copy_rule[index][0])
+                (self.add_recursively_rule(node,
+                 current_graph.list_copy_rule[index][0]))
+                (self.add_recursively_rule(mirror,
+                 current_graph.list_copy_rule[index][0]))
                 del current_graph.list_copy_rule[index]
                 prev_case = 4
                 break
@@ -282,36 +309,45 @@ class Graph(object):
         copy_graph_3 = copy.deepcopy(current_graph)
         copy_rule = None
         case = 0
-        
-        
-        if type(mirror).__name__ == "Node_condition" and type(node).__name__ == "Node_condition":
+
+        if (type(mirror).__name__ == "Node_condition"
+           and type(node).__name__ == "Node_condition"):
             case = 3
             if prev_case == 0 or prev_case == 3:
-                copy_rule_1 = self.set_special_or(rule, node, current_graph, copy_graph_1, 1)
-                self.check_ind_rules(origin_graph, copy_graph_1, copy_rule_1, 3)
-                copy_rule_2 = self.set_special_or(rule, node, current_graph, copy_graph_2, 2)
-                self.check_ind_rules(origin_graph, copy_graph_2, copy_rule_2, 3)
-                copy_rule_3 = self.set_special_or(rule, node, current_graph, copy_graph_3, 4)
-                self.check_ind_rules(origin_graph, copy_graph_3, copy_rule_3, 3)
-            
-            elif prev_case == 1 or prev_case == 2 or prev_case == 4 or prev_case == 5:
-                copy_rule_1 = self.set_special_or(rule, node, current_graph, copy_graph_1, 3)
-                self.check_ind_rules(origin_graph, copy_graph_1, copy_rule_1, 3)
+                copy_rule_1 = self.set_special_or(rule, node, current_graph,
+                                                  copy_graph_1, 1)
+                self.check_ind_rules(origin_graph, copy_graph_1,
+                                     copy_rule_1, 3)
+                copy_rule_2 = self.set_special_or(rule, node, current_graph,
+                                                  copy_graph_2, 2)
+                self.check_ind_rules(origin_graph, copy_graph_2,
+                                     copy_rule_2, 3)
+                copy_rule_3 = self.set_special_or(rule, node, current_graph,
+                                                  copy_graph_3, 4)
+                self.check_ind_rules(origin_graph, copy_graph_3,
+                                     copy_rule_3, 3)
 
-                
+            elif (prev_case == 1 or prev_case == 2 or prev_case == 4
+                  or prev_case == 5):
+                copy_rule_1 = self.set_special_or(rule, node, current_graph,
+                                                  copy_graph_1, 3)
+                self.check_ind_rules(origin_graph, copy_graph_1, copy_rule_1,
+                                     3)
+
         if type(mirror).__name__ == "Node_condition" and case != 3:
             copy_node = copy_graph_1.find_letter_in_implies(node.name)
             copy_rule = self.get_copy_rule(node, rule, copy_node, copy_graph_1)
             self.handle_neg(copy_rule, copy_node, 0)
             self.handle_neg(copy_rule, copy_node.or_dic[copy_rule[0]], 1)
-            case = 1 
+            case = 1
         if type(node).__name__ == "Node_condition" and case != 3:
             copy_node = copy_graph_1.find_letter_in_implies(mirror.name)
-            copy_rule = self.get_copy_rule(mirror, rule, copy_node, copy_graph_1)
+            copy_rule = self.get_copy_rule(mirror, rule, copy_node,
+                                           copy_graph_1)
             self.handle_neg(copy_rule, copy_node, 0)
             self.handle_neg(copy_rule, copy_node.or_dic[copy_rule[0]], 1)
             case = 2
-        
+
         if prev_case == 0:
             if case == 1 or case == 0:
                 self.set_rules_or(rule, node, copy_graph_1, 1)
@@ -352,55 +388,73 @@ class Graph(object):
                 self.set_rules_or(rule, mirror, copy_graph_1, 4)
         if case == 0:
             if prev_case == 0 or prev_case == 3:
-                self.check_ind_rules(origin_graph, copy_graph_1, copy_rule, case)
-                self.check_ind_rules(origin_graph, copy_graph_2, copy_rule, case)
-                self.check_ind_rules(origin_graph, copy_graph_3, copy_rule, case)
-            elif prev_case == 1 or prev_case == 2 or prev_case == 4 or prev_case == 5:
-                self.check_ind_rules(origin_graph, copy_graph_1, copy_rule, case)
-            
+                self.check_ind_rules(origin_graph, copy_graph_1,
+                                     copy_rule, case)
+                self.check_ind_rules(origin_graph, copy_graph_2,
+                                     copy_rule, case)
+                self.check_ind_rules(origin_graph, copy_graph_3,
+                                     copy_rule, case)
+            elif (prev_case == 1 or prev_case == 2 or prev_case == 4
+                  or prev_case == 5):
+                self.check_ind_rules(origin_graph, copy_graph_1,
+                                     copy_rule, case)
+
         if case == 1:
             if prev_case == 0 or prev_case == 3:
-                self.check_ind_rules(origin_graph, copy_graph_1, copy_rule, case)
+                self.check_ind_rules(origin_graph, copy_graph_1,
+                                     copy_rule, case)
                 self.check_ind_rules(origin_graph, copy_graph_2, None, 0)
                 self.check_ind_rules(origin_graph, copy_graph_3, None, 0)
-            elif prev_case == 1 or prev_case == 2 or prev_case == 4 or prev_case == 5:
-                self.check_ind_rules(origin_graph, copy_graph_1, copy_rule, case)
+            elif (prev_case == 1 or prev_case == 2 or prev_case == 4
+                  or prev_case == 5):
+                self.check_ind_rules(origin_graph, copy_graph_1,
+                                     copy_rule, case)
         if case == 2:
             if prev_case == 0 or prev_case == 3:
-                self.check_ind_rules(origin_graph, copy_graph_1, copy_rule, case)
+                self.check_ind_rules(origin_graph, copy_graph_1, copy_rule,
+                                     case)
                 self.check_ind_rules(origin_graph, copy_graph_2, None, 0)
-                self.check_ind_rules(origin_graph, copy_graph_3, None, 0)
-            elif prev_case == 1 or prev_case == 2 or prev_case == 4 or prev_case == 5:
-                self.check_ind_rules(origin_graph, copy_graph_1, copy_rule, case)
-        
-    def check_ind_rules(self, origin_graph, current_graph, prev_rule, prev_case):
+                self.check_ind_rules(origin_graph, copy_graph_3,
+                                     None, 0)
+            elif (prev_case == 1 or prev_case == 2 or prev_case == 4
+                  or prev_case == 5):
+                self.check_ind_rules(origin_graph, copy_graph_1,
+                                     copy_rule, case)
+
+    def check_ind_rules(self, origin_graph, current_graph, prev_rule,
+                        prev_case):
         tot = 0
-        
+
         for node in current_graph.ast_list:
-            tot = self.crawl_ast(node, origin_graph, current_graph, prev_rule, prev_case)
+            tot = self.crawl_ast(node, origin_graph, current_graph,
+                                 prev_rule, prev_case)
             if tot != 0:
                 return
         if tot == 0:
             origin_graph.list_copy.append(current_graph)
 
-    
-    def crawl_ast(self, node, origin_graph, current_graph, prev_rule, prev_case):
+    def crawl_ast(self, node, origin_graph, current_graph, prev_rule,
+                  prev_case):
         if node:
             for rule, mirror in node.xor_dic.items():
-                self.handle_xor(origin_graph, current_graph, prev_rule, prev_case, node, rule, mirror)
+                self.handle_xor(origin_graph, current_graph, prev_rule,
+                                prev_case, node, rule, mirror)
                 return 1
             for rule, mirror in node.or_dic.items():
-                self.handle_or(origin_graph, current_graph, prev_rule, prev_case, node, rule, mirror)
+                self.handle_or(origin_graph, current_graph, prev_rule,
+                               prev_case, node, rule, mirror)
                 return 1
-            
+
             if type(node).__name__ == "Node_condition":
                 if node.neg == 1 and prev_case == 0:
                     prev_case = 5
-                if self.crawl_ast(node.left, origin_graph, current_graph, prev_rule, prev_case) == 1:
+                if self.crawl_ast(node.left, origin_graph, current_graph,
+                                  prev_rule, prev_case) == 1:
                     return 1
-                return self.crawl_ast(node.right, origin_graph, current_graph, prev_rule, prev_case)
+                return self.crawl_ast(node.right, origin_graph,
+                                      current_graph, prev_rule, prev_case)
             return 0
-    
+
     def set_special_xor(self, rule, node, current_graph, copy_graph, step):
         copy_node = self.get_copy_cond(node, current_graph, copy_graph)
         copy_rule = self.get_copy_rule_cond(node, rule, copy_node, copy_graph)
@@ -410,21 +464,29 @@ class Graph(object):
 
         if step == 1:
             self.del_rule_in_childs(copy_mirror, copy_rule)
-            copy_graph.list_copy_rule.append([copy_rule, copy_mirror.left, copy_mirror.right])
+            copy_graph.list_copy_rule.append([copy_rule,
+                                              copy_mirror.left,
+                                              copy_mirror.right])
         if step == 2:
             self.del_rule_in_childs(copy_node, copy_rule)
-            copy_graph.list_copy_rule.append([copy_rule, copy_node.left, copy_node.right])
+            copy_graph.list_copy_rule.append([copy_rule,
+                                              copy_node.left,
+                                              copy_node.right])
         if step == 3:
             self.del_rule_in_childs(copy_mirror, copy_rule)
             self.del_rule_in_childs(copy_node, copy_rule)
-            copy_graph.list_copy_rule.append([copy_rule, copy_mirror.left, copy_mirror.right])
-            copy_graph.list_copy_rule.append([copy_rule, copy_node.left, copy_node.right])
+            copy_graph.list_copy_rule.append([copy_rule,
+                                              copy_mirror.left,
+                                              copy_mirror.right])
+            copy_graph.list_copy_rule.append([copy_rule,
+                                              copy_node.left,
+                                              copy_node.right])
         if step == 4:
             pass
         copy_mirror.xor_dic.pop(copy_rule[0])
         copy_node.xor_dic.pop(copy_rule[0])
         return copy_rule, copy_node
-    
+
     def set_special_or(self, rule, node, current_graph, copy_graph, step):
         copy_node = self.get_copy_cond(node, current_graph, copy_graph)
         copy_rule = self.get_copy_rule_cond(node, rule, copy_node, copy_graph)
@@ -433,21 +495,29 @@ class Graph(object):
         self.handle_neg(copy_rule, copy_mirror, 1)
         if step == 1:
             self.del_rule_in_childs(copy_mirror, copy_rule)
-            copy_graph.list_copy_rule.append([copy_rule, copy_mirror.left, copy_mirror.right])
+            copy_graph.list_copy_rule.append([copy_rule,
+                                              copy_mirror.left,
+                                              copy_mirror.right])
         if step == 2:
             self.del_rule_in_childs(copy_node, copy_rule)
-            copy_graph.list_copy_rule.append([copy_rule, copy_node.left, copy_node.right])
+            copy_graph.list_copy_rule.append([copy_rule,
+                                              copy_node.left,
+                                              copy_node.right])
         if step == 3:
             self.del_rule_in_childs(copy_mirror, copy_rule)
             self.del_rule_in_childs(copy_node, copy_rule)
-            copy_graph.list_copy_rule.append([copy_rule, copy_mirror.left, copy_mirror.right])
-            copy_graph.list_copy_rule.append([copy_rule, copy_node.left, copy_node.right])
+            copy_graph.list_copy_rule.append([copy_rule,
+                                              copy_mirror.left,
+                                              copy_mirror.right])
+            copy_graph.list_copy_rule.append([copy_rule,
+                                              copy_node.left,
+                                              copy_node.right])
         if step == 4:
             pass
         copy_mirror.or_dic.pop(copy_rule[0])
         copy_node.or_dic.pop(copy_rule[0])
         return copy_rule
-    
+
     def set_rules_xor(self, rule, node, copy_graph, step):
         copy_node = copy_graph.find_letter_in_implies(node.name)
         copy_rule = self.get_copy_rule(node, rule, copy_node, copy_graph)
@@ -466,7 +536,7 @@ class Graph(object):
 
     def set_rules_or(self, rule, node, copy_graph, step):
         copy_node = copy_graph.find_letter_in_implies(node.name)
-        copy_rule = self.get_copy_rule(node, rule, copy_node, copy_graph)      
+        copy_rule = self.get_copy_rule(node, rule, copy_node, copy_graph)
         copy_mirror = copy_node.or_dic[copy_rule[0]]
         self.handle_neg(copy_rule, copy_node, 0)
         self.handle_neg(copy_rule, copy_mirror, 1)
@@ -480,10 +550,10 @@ class Graph(object):
             self.del_rule_in_childs(copy_node, copy_rule)
         if step == 4:
             pass
-        
+
         copy_mirror.or_dic.pop(copy_rule[0])
         copy_node.or_dic.pop(copy_rule[0])
-    
+
     def del_rule_in_childs(self, node, rule):
         if node in rule[1]:
             if type(node).__name__ == "Node_letter":
@@ -503,7 +573,7 @@ class Graph(object):
                         return
             else:
                 self.delete_recursively_rule(node, rule)
-                
+
     def delete_recursively_rule(self, node, rule):
         if node:
             if type(node).__name__ == "Node_letter":
@@ -511,11 +581,11 @@ class Graph(object):
             if type(node).__name__ == "Node_condition":
                 self.delete_recursively_rule(node.left, rule)
                 self.delete_recursively_rule(node.right, rule)
-                
+
     def add_recursively_rule(self, node, rule):
         if node:
             if type(node).__name__ == "Node_letter":
- 
+
                 if node in rule[1]:
                     node.childs_neg.append(rule[0])
                     self.del_rule_in_childs(node, [rule[0], []])
@@ -524,7 +594,7 @@ class Graph(object):
             if type(node).__name__ == "Node_condition":
                 self.add_recursively_rule(node.left, rule)
                 self.add_recursively_rule(node.right, rule)
-                
+
     def get_copy_rule(self, true_node, true_rule, copy_node, copy_graph):
         for index in range(0, len(true_node.childs_pos)):
             if true_node.childs_pos[index] == true_rule:
@@ -532,21 +602,23 @@ class Graph(object):
         for index in range(0, len(true_node.childs_neg)):
             if true_node.childs_neg[index] == true_rule:
                 return [copy_node.childs_neg[index], []]
-        return 
-    
+        return
+
     def get_copy_rule_cond(self, node, rule, copy_node, copy_graph):
         while type(node).__name__ == "Node_condition":
             node = node.left
             copy_node = copy_node.left
         return self.get_copy_rule(node, rule, copy_node, copy_graph)
-        
+
     def get_copy_cond(self, node, current_graph, copy_graph):
-        
+
         for i in range(0, len(current_graph.ast_list)):
-            ret = self.find_cond_in_ast(node, current_graph.ast_list[i], copy_graph.ast_list[i])
+            ret = self.find_cond_in_ast(node,
+                                        current_graph.ast_list[i],
+                                        copy_graph.ast_list[i])
             if ret:
                 return ret
-            
+
     def find_cond_in_ast(self, to_find, root, copy_root):
         if root:
             if to_find == root:
@@ -555,12 +627,13 @@ class Graph(object):
                 ret = self.find_cond_in_ast(to_find, root.left, copy_root.left)
                 if ret:
                     return ret
-                return self.find_cond_in_ast(to_find, root.right, copy_root.right)
+                return self.find_cond_in_ast(to_find,
+                                             root.right, copy_root.right)
         return None
-    
+
     def handle_neg(self, copy_rule, node, pos):
         if type(node).__name__ == "Node_letter":
-            if copy_rule[0] in node.childs_neg :
+            if copy_rule[0] in node.childs_neg:
                 copy_rule[1].append(node)
         if type(node).__name__ == "Node_condition":
             self.handle_neg(copy_rule, node.left, pos)
@@ -575,7 +648,7 @@ class Graph(object):
         for hist in self.list_copy:
             print("|", end="")
             for v in hist.full_history.values():
-                if v == True:
+                if v is True:
                     print("\033[92m  True  \033[0m|", end="")
                 else:
                     print("\033[91m  False \033[0m|", end="")
@@ -583,9 +656,9 @@ class Graph(object):
         print("Result :")
         print("|", end="")
         for v in self.full_history.values():
-            if v == True:
+            if v is True:
                 print("\033[92m  True  \033[0m|", end="")
-            elif v == False:
+            elif v is False:
                 print("\033[91m  False \033[0m|", end="")
             else:
                 print("\033[93m   IND  \033[0m|", end="")
