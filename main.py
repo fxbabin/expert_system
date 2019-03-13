@@ -16,7 +16,10 @@ def main():
         for node in graph.implies_list:
             graph.set_facts(node)
 
-        graph.check_contradiction()
+        if graph.incoherent == 0:
+            graph.resolve_simple()
+        else:
+            graph.resolve_complex()
 
         for queried in setting.queries:
             graph.query(queried)
