@@ -5,6 +5,12 @@ from xs_setting import Setting
 
 
 def process_engine(setting):
+    if setting.graph_rules:
+        try:
+            print('Importing visualizer (this may take some time) ...')
+            from xs_visualizer import Visualizer
+        except ImportError:
+            raise ImportError('Failed to import visualizer')
     try:
         graph = Graph()
         for rule in setting.rules:
@@ -45,12 +51,6 @@ def ask_new_facts(setting):
 
 def main():
     setting = Setting()
-    if setting.graph_rules:
-        try:
-            print('Importing visualizer (this may take some time) ...')
-            from xs_visualizer import Visualizer
-        except ImportError:
-            raise ImportError('Failed to import visualizer')
     if setting.interactive:
         while setting.interactive:
             process_engine(setting)
