@@ -154,12 +154,14 @@ class Graph(object):
     def resolve_complex(self):
         self.check_ind_rules(self, self, None, 0)
         self.tmp_history = {}
+        list_history = []
         for copy_graph in self.list_copy:
             hist = copy_graph.resolve_simple()
+            list_history.append(hist)
             self.merge_new_graph(hist)
         self.full_history = self.tmp_history
         if self.display_tables:
-            self.display_table()
+            self.display_table(list_history)
 
     def handle_xor(self, origin_graph, current_graph, prev_rule,
                    prev_case, node, rule, mirror):
@@ -639,15 +641,17 @@ class Graph(object):
             self.handle_neg(copy_rule, node.left, pos)
             self.handle_neg(copy_rule, node.right, pos)
 
-    def display_table(self):
+    def display_table(self, list_history):
         print("Truth Tables")
         print('|', end="")
+        tmp = copy.copy(list_history[0])
         for k in self.full_history.keys():
             print("    {}   |".format(k), end="")
         print()
-        for hist in self.list_copy:
+        for copy_graph in self.list_copy:
             print("|", end="")
-            for v in hist.full_history.values():
+            hist = copy_graph.resolve_simple()
+            for v in hist.values():
                 if v is True:
                     print("\033[92m  True  \033[0m|", end="")
                 else:
@@ -655,7 +659,7 @@ class Graph(object):
             print()
         print("Result :")
         print("|", end="")
-        for v in self.full_history.values():
+        for v in tmp.values():
             if v is True:
                 print("\033[92m  True  \033[0m|", end="")
             elif v is False:
